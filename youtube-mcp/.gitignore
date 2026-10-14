@@ -1,0 +1,50 @@
+# Credentials & Secret tokens (CRITICAL FOR PRIVACY & SECURITY)
+client_secret*.json
+token*.json
+credentials.json
+.secrets/
+*.env
+.env
+.env.*
+!.env.example
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Operating System & IDEs
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

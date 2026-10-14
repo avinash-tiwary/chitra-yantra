@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="cy-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#192230"/>
+      <stop offset="100%" stop-color="#0b0e14"/>
+    </linearGradient>
+    <linearGradient id="cy-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8d68d"/>
+      <stop offset="60%" stop-color="#dfa34b"/>
+      <stop offset="100%" stop-color="#c6852a"/>
+    </linearGradient>
+    <linearGradient id="cy-gold-inner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff1d0"/>
+      <stop offset="100%" stop-color="#dfa34b"/>
+    </linearGradient>
+    <filter id="cy-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="0.8" flood-color="#dfa34b" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- Base Squircle -->
+  <rect x="1.5" y="1.5" width="29" height="29" rx="6.5" fill="url(#cy-bg)" stroke="#2d3748" stroke-width="1"/>
+  <!-- Inner Subtle Accent Border -->
+  <rect x="2.5" y="2.5" width="27" height="27" rx="5.5" fill="none" stroke="#e8a84c" stroke-width="0.5" stroke-opacity="0.2"/>
+  <!-- Yantra Diamond Motif (Rotated 45° at center 16, 16) -->
+  <g transform="rotate(45 16 16)" filter="url(#cy-glow)">
+    <!-- Outer Yantra Diamond Frame -->
+    <rect x="7" y="7" width="18" height="18" rx="1.6" fill="none" stroke="url(#cy-gold)" stroke-width="1.8"/>
+    <!-- Middle Concentric Diamond Frame -->
+    <rect x="10.25" y="10.25" width="11.5" height="11.5" rx="0.8" fill="none" stroke="#f0ce8c" stroke-width="1.2" stroke-opacity="0.85"/>
+    <!-- Core Sacred Diamond (Bindu) -->
+    <rect x="13.5" y="13.5" width="5" height="5" rx="0.5" fill="url(#cy-gold-inner)"/>
+  </g>
+</svg>

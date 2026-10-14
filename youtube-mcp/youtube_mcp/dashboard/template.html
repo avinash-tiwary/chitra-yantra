@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Creator Studio & Analytics Dashboard | YouTube MCP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(99, 102, 241, 0.4);
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-red: #ef4444;
+      --accent-youtube: #ff0033;
+      --accent-indigo: #6366f1;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --gradient-accent: linear-gradient(135deg, #ff0033 0%, #ff4b2b 100%);
+      --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+      --glow-red: 0 0 25px rgba(255, 0, 51, 0.25);
+      --glow-indigo: 0 0 25px rgba(99, 102, 241, 0.25);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(255, 0, 51, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Layout Containers */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Header Bar */
+    header.dashboard-header {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .channel-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .channel-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-red);
+      box-shadow: var(--glow-red);
+      object-fit: cover;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--text-primary);
+    }
+
+    .channel-meta h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .channel-handle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 3px;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-emerald);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-live::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent-emerald);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Quota Meter in Header */
+    .quota-meter-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 170px;
+    }
+
+    .quota-meter-pill .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .quota-progress-bar {
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .quota-progress-fill {
+      height: 100%;
+      background: var(--accent-cyan);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      width: 16%;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient-accent);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 0, 51, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 0, 51, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Tab Navigation */
+    nav.dashboard-nav {
+      display: flex;
+      gap: 8px;
+      background: rgba(17, 24, 39, 0.6);
+      padding: 6px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .nav-tab {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-tab.active {
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+      border: 1px solid var(--border-highlight);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Tab Content Areas */
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-highlight);
+      background: var(--bg-card-hover);
+    }
+
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .kpi-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 14px 0 6px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Milestone Tracker Section */
+    .milestone-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .milestone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .milestone-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .milestone-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .milestone-progress {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .milestone-bar {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bar-watch-time {
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+    }
+
+    .bar-subscribers {
+      background: linear-gradient(90deg, #ff0033, #f59e0b);
+    }
+
+    /* Analytics Charts & Details */
+    .chart-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .chart-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .time-selector {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .time-btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .time-btn.active {
+      background: var(--accent-indigo);
+      color: white;
+    }
+
+    .chart-canvas-wrapper {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding-top: 30px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .svg-chart {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Traffic Sources Panel */
+    .traffic-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .traffic-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .traffic-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .traffic-item-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .traffic-bar-bg {
+      height: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .traffic-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--accent-indigo);
+    }
+
+    /* Retention Curve Lab */
+    .retention-container {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+    }
+
+    @media (max-width: 992px) {
+      .retention-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .retention-curve-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .retention-insights {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .insight-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .insight-card h4 {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .insight-card .value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    /* Video Studio Table */
+    .video-table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    table.video-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    table.video-table th {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 16px 20px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    table.video-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    table.video-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .privacy-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .privacy-public {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .privacy-unlisted {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-amber);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .privacy-private {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-indigo);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* SEO Optimizer Tool */
+    .seo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .seo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .input-text, textarea.input-text {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .input-text:focus, textarea.input-text:focus {
+      outline: none;
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .meter-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .meter-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+
+    /* Footer */
+    footer.dashboard-footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="dashboard-header" id="header">
+      <div class="channel-profile">
+        <div class="channel-avatar" id="channelAvatar">C</div>
+        <div class="channel-meta">
+          <h1 id="channelTitle">Your YouTube Channel <span class="badge-live">Not connected</span></h1>
+          <div class="channel-handle">
+            <span id="channelHandle">@your-channel</span>
+            <span>•</span>
+            <span id="channelIdBadge" style="font-family: monospace; font-size: 11px; opacity: 0.7;">Connect an account to load channel details</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="quota-meter-pill" title="Daily Google YouTube Data API Quota (10,000 units free allowance)">
+          <div class="label">
+            <span>Daily Quota</span>
+            <span id="quotaText">1,600 / 10k</span>
+          </div>
+          <div class="quota-progress-bar">
+            <div class="quota-progress-fill" id="quotaProgressFill" style="width: 16%;"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" id="btnRefresh" onclick="fetchDashboardData()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Refresh
+        </button>
+
+        <a href="https://studio.youtube.com" target="_blank" class="btn btn-primary" id="btnStudioLink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          YouTube Studio
+        </a>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="dashboard-nav" id="mainNav">
+      <button class="nav-tab active" data-tab="overview" onclick="switchTab('overview')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Executive Overview
+      </button>
+      <button class="nav-tab" data-tab="analytics" onclick="switchTab('analytics')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Deep Analytics
+      </button>
+      <button class="nav-tab" data-tab="retention" onclick="switchTab('retention')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Retention Lab
+      </button>
+      <button class="nav-tab" data-tab="videos" onclick="switchTab('videos')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Video Library
+      </button>
+      <button class="nav-tab" data-tab="seo" onclick="switchTab('seo')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        SEO & Publish Optimizer
+      </button>
+    </nav>
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+    <!-- ================================================================= -->
+    <section class="tab-content active" id="tab-overview">
+      
+      <!-- Key KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card" id="kpiSubscribers">
+          <div class="kpi-header">
+            <span>Subscribers</span>
+            <div class="kpi-icon">👥</div>
+          </div>
+          <div class="kpi-value" id="valSubscribers">0</div>
+          <div class="kpi-subtext">Lifetime channel audience</div>
+        </div>
+
+        <div class="kpi-card" id="kpiViews">
+          <div class="kpi-header">
+            <span>Lifetime Views</span>
+            <div class="kpi-icon">👁️</div>
+          </div>
+          <div class="kpi-value" id="valViews">0</div>
+          <div class="kpi-subtext">Total channel impressions</div>
+        </div>
+
+        <div class="kpi-card" id="kpiVideos">
+          <div class="kpi-header">
+            <span>Total Uploads</span>
+            <div class="kpi-icon">🎬</div>
+          </div>
+          <div class="kpi-value" id="valVideos">0</div>
+          <div class="kpi-subtext">Published channel videos</div>
+        </div>
+
+        <div class="kpi-card" id="kpiWatchTime">
+          <div class="kpi-header">
+            <span>Estimated Watch Time</span>
+            <div class="kpi-icon">⏱️</div>
+          </div>
+          <div class="kpi-value" id="valWatchTime">0.0 <span style="font-size: 16px;">hrs</span></div>
+          <div class="kpi-subtext">Audience viewing time</div>
+        </div>
+      </div>
+
+      <!-- Monetization & Milestones -->
+      <div class="milestone-section">
+        <div class="section-title">
+          <span>YouTube Partner Program (YPP) Progress</span>
+          <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Monetization Criteria</span>
+        </div>
+
+        <div class="milestone-grid">
+          <div class="milestone-box">
+            <div class="milestone-header">
+              <span>Public Watch Hours</span>
+              <span id="yppWatchText">0 / 4,000 hrs</span>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-bar bar-watch-time" id="yppWatchBar" style="width: 0.5%;"></div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">4,000 valid public watch hours in the last 365 days required.</div>
+          </div>
+
+          <div class="milestone-box">
+            <div class="milestone-header">
+              <span>Subscriber Target</span>
+              <span id="yppSubsText">0 / 1,000 subs</span>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-bar bar-subscribers" id="yppSubsBar" style="width: 0.5%;"></div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">1,000 subscribers required for standard revenue sharing.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Channel Details Card -->
+      <div class="milestone-section">
+        <div class="section-title">Channel About & Identity</div>
+        <p id="channelDescription" style="color: var(--text-secondary); line-height: 1.6; font-size: 14px;">
+          Loading channel description...
+        </p>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: DEEP ANALYTICS -->
+    <!-- ================================================================= -->
+    <section class="tab-content" id="tab-analytics">
+      
+      <div class="chart-panel">
+        <div class="chart-controls">
+          <div>
+            <div class="section-title" style="margin-bottom: 4px;">Audience Velocity Trend</div>
+            <div style="font-size: 13px; color: var(--text-muted);">Daily views & estimated watch duration across the channel</div>
+          </div>
+
+          <div class="time-selector">
+            <button class="time-btn" onclick="setAnalyticsPeriod('7d', this)">7 Days</button>
+            <button class="time-btn active" onclick="setAnalyticsPeriod('28d', this)">28 Days</button>
+            <button class="time-btn" onclick="setAnalyticsPeriod('90d', this)">90 Days</button>
+          </div>
+        </div>
+
+        <!-- SVG Line Chart Visualizer -->
+        <div class="chart-canvas-wrapper" id="chartWrapper">
+          <svg class="svg-chart" id="analyticsSvg" viewBox="0 0 1000 240" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <!-- Baseline -->
+            <line x1="0" y1="220" x2="1000" y2="220" stroke="rgba(255,255,255,0.1)" stroke-dasharray="4"/>
+            <line x1="0" y1="120" x2="1000" y2="120" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+            <!-- Path will be rendered dynamically by JS -->
+            <path id="chartArea" d="" fill="url(#chartGrad)"/>
+            <path id="chartLine" d="" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);" id="chartDateLabels">
+          <span>Start of period</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      <!-- Traffic Sources & Discovery -->
+      <div class="traffic-panel">
+        <div class="chart-panel">
+          <div class="section-title">Traffic & Discovery Sources</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: -12px;">How viewers discover your content on YouTube</div>
+
+          <div class="traffic-list" id="trafficList">
+            <div class="traffic-item">
+              <div class="traffic-item-header">
+                <span>YouTube Search</span>
+                <span>0%</span>
+              </div>
+              <div class="traffic-bar-bg"><div class="traffic-bar-fill" style="width: 5%;"></div></div>
+            </div>
+            <div class="traffic-item">
+              <div class="traffic-item-header">
+                <span>Suggested Videos</span>
+                <span>0%</span>
+              </div>
+              <div class="traffic-bar-bg"><div class="traffic-bar-fill" style="width: 5%;"></div></div>
+            </div>
+            <div class="traffic-item">
+              <div class="traffic-item-header">
+                <span>Browse / Subscription Feed</span>
+                <span>0%</span>
+              </div>
+              <div class="traffic-bar-bg"><div class="traffic-bar-fill" style="width: 5%;"></div></div>
+            </div>
+            <div class="traffic-item">
+              <div class="traffic-item-header">
+                <span>External Websites</span>
+                <span>0%</span>
+              </div>
+              <div class="traffic-bar-bg"><div class="traffic-bar-fill" style="width: 5%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-panel">
+          <div class="section-title">Engagement & Growth Summary</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: -12px;">Community reactions during this period</div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;">
+            <div class="insight-card">
+              <h4>Net Subscribers</h4>
+              <div class="value" id="valNetSubs" style="color: var(--accent-emerald);">+0</div>
+            </div>
+            <div class="insight-card">
+              <h4>Total Likes</h4>
+              <div class="value" id="valPeriodLikes">0</div>
+            </div>
+            <div class="insight-card">
+              <h4>Comments</h4>
+              <div class="value" id="valPeriodComments">0</div>
+            </div>
+            <div class="insight-card">
+              <h4>Average View Time</h4>
+              <div class="value" id="valPeriodAvgDuration">0.0s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: RETENTION LAB -->
+    <!-- ================================================================= -->
+    <section class="tab-content" id="tab-retention">
+      
+      <div class="chart-panel">
+        <div class="section-title">
+          <span>Audience Retention & Pacing Lab</span>
+          <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">
+            Pinpoints exact timestamps where viewers drop off
+          </div>
+        </div>
+
+        <div class="retention-container">
+          <div class="retention-curve-box">
+            <svg viewBox="0 0 600 240" style="width: 100%; height: 100%;" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <line x1="0" y1="60" x2="600" y2="60" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+              <line x1="0" y1="120" x2="600" y2="120" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+              <line x1="0" y1="180" x2="600" y2="180" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+              
+              <!-- Simulated curve -->
+              <path d="M 0 20 Q 80 50 180 90 T 380 130 T 600 170" fill="none" stroke="#06b6d4" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 0 20 Q 80 50 180 90 T 380 130 T 600 170 L 600 240 L 0 240 Z" fill="rgba(6, 182, 212, 0.08)"/>
+            </svg>
+            <div style="position: absolute; top: 16px; left: 24px; font-size: 12px; color: var(--text-secondary);">
+              100% Watch Ratio
+            </div>
+            <div style="position: absolute; bottom: 12px; right: 24px; font-size: 12px; color: var(--text-muted);">
+              Video End (100%)
+            </div>
+          </div>
+
+          <div class="retention-insights">
+            <div class="insight-card">
+              <h4>Initial 30s Hook Retention</h4>
+              <div class="value" style="color: var(--accent-cyan);">~72.4%</div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Percentage of viewers who stayed past the initial 30-second hook.</p>
+            </div>
+
+            <div class="insight-card">
+              <h4>Midpoint Retention</h4>
+              <div class="value" style="color: var(--accent-indigo);">~51.0%</div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Audience holding steady through the primary narrative arc.</p>
+            </div>
+
+            <div class="insight-card">
+              <h4>Average Completion Rate</h4>
+              <div class="value" style="color: var(--accent-emerald);">~46.8%</div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Typical completion rate for deep historical essay formats.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: VIDEO LIBRARY -->
+    <!-- ================================================================= -->
+    <section class="tab-content" id="tab-videos">
+      
+      <div class="video-table-wrapper">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <div class="section-title" style="margin: 0;">Channel Uploads & Published Videos</div>
+          <span style="font-size: 13px; color: var(--text-muted);" id="videoCountLabel">0 videos</span>
+        </div>
+
+        <table class="video-table" id="videoTable">
+          <thead>
+            <tr>
+              <th>Video</th>
+              <th>Visibility</th>
+              <th>Views</th>
+              <th>Likes</th>
+              <th>Comments</th>
+              <th>Published</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="videoTableBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 48px 20px;">
+                No uploaded videos found yet on this channel.<br>
+                Use the agent tool <code>youtube_upload_video</code> to publish your first video!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 5: SEO & PUBLISH OPTIMIZER -->
+    <!-- ================================================================= -->
+    <section class="tab-content" id="tab-seo">
+      
+      <div class="seo-grid">
+        <!-- Title & Description Form -->
+        <div class="chart-panel">
+          <div class="section-title">Metadata & SEO Testing Sandbox</div>
+
+          <div class="input-group">
+            <label>
+              <span>Video Title</span>
+              <span id="titleCounter">0 / 100 chars</span>
+            </label>
+            <input type="text" class="input-text" id="inputTitle" placeholder="e.g. A clear, evidence-led video title" oninput="updateSeoMeters()">
+            <div class="meter-bar"><div class="meter-fill" id="titleMeter" style="width: 0%; background: var(--accent-emerald);"></div></div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;" id="titleHint">Recommended: 50-70 characters for best click-through rate.</div>
+          </div>
+
+          <div class="input-group">
+            <label>
+              <span>Tags (comma-separated)</span>
+              <span id="tagCounter">0 / 500 chars</span>
+            </label>
+            <input type="text" class="input-text" id="inputTags" placeholder="e.g. documentary, research, history, analysis" oninput="updateSeoMeters()">
+            <div class="meter-bar"><div class="meter-fill" id="tagMeter" style="width: 0%; background: var(--accent-indigo);"></div></div>
+          </div>
+
+          <div class="input-group">
+            <label>
+              <span>Description & Chapters</span>
+              <span id="descCounter">0 / 5000 chars</span>
+            </label>
+            <textarea class="input-text" id="inputDesc" rows="6" placeholder="00:00 - Introduction&#10;02:15 - The Monastery Foundations&#10;08:40 - The Library of Ratnasagara" oninput="updateSeoMeters()"></textarea>
+          </div>
+        </div>
+
+        <!-- Live Feed Preview Simulation -->
+        <div class="chart-panel">
+          <div class="section-title">Feed Appearance Preview</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: -12px;">How your video appears in YouTube Desktop & Mobile search feeds</div>
+
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+            <div style="width: 100%; aspect-ratio: 16/9; background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 14px; position: relative;">
+              <span>16:9 Thumbnail Preview</span>
+              <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">18:42</span>
+            </div>
+
+            <div>
+              <h3 id="previewTitle" style="font-size: 15px; font-weight: 600; line-height: 1.4;">Video title preview will appear here...</h3>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; display: flex; gap: 8px;">
+                <span>Example Channel</span>
+                <span>•</span>
+                <span>0 views</span>
+                <span>•</span>
+                <span>Just now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+      <div>YouTube MCP Server & Creator Studio • Powered by Google YouTube Data API v3 & Analytics API v2</div>
+      <div style="margin-top: 6px; opacity: 0.7;">100% Local & Privacy-Preserving • MIT Licensed</div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-tab') === tabId);
+      });
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.toggle('active', content.id === 'tab-' + tabId);
+      });
+    }
+
+    // Live API Data Fetching
+    async function fetchDashboardData() {
+      const btnRefresh = document.getElementById('btnRefresh');
+      if (btnRefresh) btnRefresh.style.opacity = '0.5';
+
+      try {
+        const overviewRes = await fetch('/api/overview');
+        if (overviewRes.ok) {
+          const data = await overviewRes.json();
+          renderOverview(data);
+        }
+
+        const analyticsRes = await fetch('/api/analytics?period=28d');
+        if (analyticsRes.ok) {
+          const analyticsData = await analyticsRes.json();
+          renderAnalytics(analyticsData);
+        }
+
+        const videosRes = await fetch('/api/videos');
+        if (videosRes.ok) {
+          const videosData = await videosRes.json();
+          renderVideos(videosData);
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+      } finally {
+        if (btnRefresh) btnRefresh.style.opacity = '1';
+      }
+    }
+
+    function renderOverview(data) {
+      if (!data) return;
+
+      if (data.title) {
+        document.getElementById('channelTitle').innerHTML = `${data.title} <span class="badge-live">Live Channel</span>`;
+      }
+      if (data.custom_url) {
+        document.getElementById('channelHandle').textContent = data.custom_url;
+      }
+      if (data.channel_id) {
+        document.getElementById('channelIdBadge').textContent = data.channel_id;
+      }
+      if (data.description) {
+        document.getElementById('channelDescription').textContent = data.description;
+      }
+
+      const subs = parseInt(data.subscriber_count || 0);
+      const views = parseInt(data.view_count || 0);
+      const videoCount = parseInt(data.video_count || 0);
+
+      document.getElementById('valSubscribers').textContent = subs.toLocaleString();
+      document.getElementById('valViews').textContent = views.toLocaleString();
+      document.getElementById('valVideos').textContent = videoCount.toLocaleString();
+
+      // Update YPP Milestones
+      const subTarget = 1000;
+      const subPercent = Math.min(100, Math.max(1, (subs / subTarget) * 100));
+      document.getElementById('yppSubsText').textContent = `${subs} / ${subTarget} subs`;
+      document.getElementById('yppSubsBar').style.width = `${subPercent}%`;
+    }
+
+    function renderAnalytics(data) {
+      if (!data) return;
+
+      const totalWatch = parseFloat(data.total_watch_time_hours || 0);
+      document.getElementById('valWatchTime').innerHTML = `${totalWatch.toFixed(1)} <span style="font-size: 16px;">hrs</span>`;
+
+      // YPP Watch hours progress
+      const watchTarget = 4000;
+      const watchPercent = Math.min(100, Math.max(1, (totalWatch / watchTarget) * 100));
+      document.getElementById('yppWatchText').textContent = `${totalWatch.toFixed(1)} / ${watchTarget} hrs`;
+      document.getElementById('yppWatchBar').style.width = `${watchPercent}%`;
+
+      // Render chart path if rows exist
+      const breakdown = data.breakdown || [];
+      if (breakdown.length > 0) {
+        renderChartSvg(breakdown);
+      }
+    }
+
+    function renderChartSvg(rows) {
+      const svg = document.getElementById('analyticsSvg');
+      const chartLine = document.getElementById('chartLine');
+      const chartArea = document.getElementById('chartArea');
+      if (!svg || !chartLine || !chartArea || rows.length === 0) return;
+
+      const maxViews = Math.max(...rows.map(r => r.views || 0), 10);
+      const width = 1000;
+      const height = 200;
+      const padding = 20;
+
+      const step = width / (rows.length - 1 || 1);
+      let lineD = '';
+      let areaD = `M 0,${height}`;
+
+      rows.forEach((row, i) => {
+        const x = i * step;
+        const val = row.views || 0;
+        const y = height - (val / maxViews) * (height - padding);
+        if (i === 0) {
+          lineD += `M ${x},${y}`;
+          areaD += ` L ${x},${y}`;
+        } else {
+          lineD += ` L ${x},${y}`;
+          areaD += ` L ${x},${y}`;
+        }
+      });
+
+      areaD += ` L ${width},${height} Z`;
+      chartLine.setAttribute('d', lineD);
+      chartArea.setAttribute('d', areaD);
+    }
+
+    function renderVideos(videos) {
+      const tbody = document.getElementById('videoTableBody');
+      const countLabel = document.getElementById('videoCountLabel');
+      if (!tbody) return;
+
+      if (!videos || videos.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 48px 20px;">
+              No uploaded videos found yet on this channel.<br>
+              Use the agent tool <code>youtube_upload_video</code> to publish your first video!
+            </td>
+          </tr>`;
+        if (countLabel) countLabel.textContent = '0 videos';
+        return;
+      }
+
+      if (countLabel) countLabel.textContent = `${videos.length} videos`;
+
+      tbody.innerHTML = videos.map(v => {
+        const statusClass = 'privacy-' + (v.privacy_status || 'private');
+        return `
+          <tr>
+            <td style="font-weight: 600; color: var(--text-primary); max-width: 320px;">
+              ${v.title}
+            </td>
+            <td><span class="privacy-badge ${statusClass}">${v.privacy_status}</span></td>
+            <td>${(v.views || 0).toLocaleString()}</td>
+            <td>${(v.likes || 0).toLocaleString()}</td>
+            <td>${(v.comments || 0).toLocaleString()}</td>
+            <td style="color: var(--text-muted); font-size: 13px;">${v.published_at ? v.published_at.slice(0, 10) : '-'}</td>
+            <td>
+              <a href="${v.url}" target="_blank" class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;">Watch</a>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    // SEO Sandbox live calculations
+    function updateSeoMeters() {
+      const title = document.getElementById('inputTitle').value;
+      const tags = document.getElementById('inputTags').value;
+      const desc = document.getElementById('inputDesc').value;
+
+      // Title
+      const tLen = title.length;
+      document.getElementById('titleCounter').textContent = `${tLen} / 100 chars`;
+      const tFill = Math.min(100, (tLen / 100) * 100);
+      const titleMeter = document.getElementById('titleMeter');
+      titleMeter.style.width = `${tFill}%`;
+
+      if (tLen >= 50 && tLen <= 70) {
+        titleMeter.style.background = 'var(--accent-emerald)';
+        document.getElementById('titleHint').style.color = 'var(--accent-emerald)';
+      } else if (tLen > 70) {
+        titleMeter.style.background = 'var(--accent-amber)';
+        document.getElementById('titleHint').style.color = 'var(--accent-amber)';
+      } else {
+        titleMeter.style.background = 'var(--accent-indigo)';
+        document.getElementById('titleHint').style.color = 'var(--text-muted)';
+      }
+
+      // Live Title Preview
+      document.getElementById('previewTitle').textContent = title.trim() || 'Video title preview will appear here...';
+
+      // Tags
+      const tagLen = tags.length;
+      document.getElementById('tagCounter').textContent = `${tagLen} / 500 chars`;
+      document.getElementById('tagMeter').style.width = `${Math.min(100, (tagLen / 500) * 100)}%`;
+
+      // Description
+      document.getElementById('descCounter').textContent = `${desc.length} / 5000 chars`;
+    }
+
+    // Period selector handler
+    async function setAnalyticsPeriod(period, btn) {
+      document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      try {
+        const res = await fetch(`/api/analytics?period=${period}`);
+        if (res.ok) {
+          const data = await res.json();
+          renderAnalytics(data);
+        }
+      } catch (e) {
+        console.error('Error changing period:', e);
+      }
+    }
+
+    // Load initial data on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchDashboardData();
+    });
+  </script>
+</body>
+</html>

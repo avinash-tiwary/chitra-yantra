@@ -1,0 +1,19 @@
+{
+  "name": "chitra-yantra",
+  "version": "2.0.0",
+  "description": "YouTube Video Production Control Center — चित्र यन्त्र",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test tests/*.test.js",
+    "check": "node --check server.js && node --check public/app.js && node --test tests/*.test.js",
+    "preflight": "node scripts/preflight.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

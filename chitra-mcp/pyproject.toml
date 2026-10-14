@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chitra-mcp"
+version = "0.1.0"
+description = "MCP tools for Chitra Yantra video-production workspaces"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["mcp>=1.2.0"]
+
+[project.scripts]
+chitra-mcp = "chitra_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["chitra_mcp"]

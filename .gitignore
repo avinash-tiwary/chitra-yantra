@@ -1,0 +1,65 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+.secrets/
+client_secret*.json
+token*.json
+credentials.json
+*.pem
+*.key
+*.secret
+
+# Local workspaces and runtime state
+/channels/*
+!/channels/.gitkeep
+chitra-yantra/data/
+chitra-yantra/state/
+*.db
+*.sqlite*
+*.log
+*.pid
+
+# Dependencies and build products
+.venv/
+**/.venv/
+node_modules/
+dist/
+build/
+__pycache__/
+.pytest_cache/
+
+# Generated media and model files
+*.wav
+*.mp3
+*.flac
+*.aac
+*.m4a
+*.aiff
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+*.gguf
+*.ckpt
+
+# Application source assets (not generated workspace media)
+!chitra-yantra/public/*.png
+!chitra-yantra/public/*.jpg
+!chitra-yantra/public/*.jpeg
+!chitra-yantra/public/*.svg
+!chitra-yantra/public/*.ico
+
+# Local tooling
+.DS_Store
+.idea/
+.vscode/
+.cursor/

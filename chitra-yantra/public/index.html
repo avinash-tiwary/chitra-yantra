@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Evidence-led video production workspace">
+  <title>Chitra Yantra · चित्र यन्त्र</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="alternate icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css?v=10">
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to workspace</a>
+  <div class="app-shell">
+    <header class="masthead">
+      <a class="brand" href="/" id="brand-home" aria-label="All video workspaces"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><strong lang="hi">चित्र यन्त्र</strong><small>Chitra Yantra</small></span></a>
+      <div class="masthead-center" id="connection-copy">Connecting to the studio…</div>
+      <div class="masthead-actions">
+        <span class="connection-dot" id="connection-dot" aria-label="Disconnected"></span>
+        <button class="button quiet nav-dashboard-btn" id="nav-dashboard" type="button" hidden>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Go to dashboard
+        </button>
+        <button class="button primary" id="new-project" type="button">New video</button>
+      </div>
+    </header>
+    <main class="main" id="workspace" tabindex="-1">
+      <section class="home-view" id="home-view" aria-labelledby="home-title">
+        <header class="home-heading"><div><p class="kicker">Production desk</p><h1 id="home-title">Active video workspaces</h1><p>Open a production to continue its work, or start a new one.</p></div><button class="button primary" id="home-new-project" type="button">New video</button></header>
+        <div class="home-controls"><label class="search"><span class="sr-only">Filter videos</span><input id="project-filter" type="search" placeholder="Find a video"></label><label class="home-channel"><span>Channel</span><select id="home-channel" aria-label="Filter by channel"></select></label></div>
+        <div class="workspace-list" id="project-list" role="list"></div>
+      </section>
+      <section id="project-workspace" class="workspace-view" hidden aria-label="Video workspace">
+        <header class="workspace-bar">
+          <div class="workspace-identity"><strong id="project-title"></strong><span class="status-pill" id="stage-status"></span><span class="stage-progress-badge" id="stage-progress-text">0 / 10 approved</span></div>
+          <div class="workspace-actions"><label class="worker-control"><span>Workspace worker</span><select id="agent-select" aria-label="Workspace worker"></select></label><button class="icon-button" id="settings-toggle" type="button" aria-label="Workspace settings" aria-expanded="false">⋯</button></div>
+        </header>
+        <div class="workspace-layout" id="workspace-layout">
+          <aside class="stage-sidebar" id="stage-sidebar" aria-label="Production stages">
+            <div class="stage-sidebar-header">
+              <span>Workflow</span>
+              <button class="automation-mode-toggle" id="global-auto-toggle" type="button" aria-pressed="false" title="Enable automation for the whole workflow">
+                <span class="automation-mode-indicator" aria-hidden="true"></span>
+                <span class="automation-mode-label">Manual mode</span>
+              </button>
+            </div>
+            <nav class="stage-rail" id="pipeline" aria-label="Production stages"></nav>
+            <div class="stage-sidebar-footer">
+              <button class="stage-rail-toggle" id="stages-edge-toggle" type="button" aria-label="Toggle stages sidebar" title="Toggle stages sidebar">
+                <svg class="toggle-icon-chevron" viewBox="0 0 24 24" width="14" height="14"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="stage-toggle-text">Collapse</span>
+              </button>
+            </div>
+            <div class="stage-resizer" id="stage-resizer" title="Drag to resize workflow sidebar" aria-hidden="true"></div>
+          </aside>
+          <section class="focus-canvas" aria-labelledby="stage-title">
+            <div class="stage-name sr-only"><span id="stage-title"></span><span id="stage-description"></span><span id="stage-position"></span><select id="substage-select" aria-label="Stage operation"></select></div>
+            <div class="artifact-toolbar" hidden><span id="artifact-summary"></span></div>
+            <!-- Specialized Idea Studio for Stage 1 -->
+            <div class="idea-studio" id="idea-studio" hidden>
+              <!-- Top Studio Control Bar -->
+              <div class="idea-studio-bar">
+                <div class="idea-mode-tabs" role="tablist" aria-label="Ideation mode">
+                  <button type="button" role="tab" class="idea-mode-tab active" id="tab-guided-mode" data-mode="guided" aria-selected="true">
+                    Topic Input
+                  </button>
+                  <button type="button" role="tab" class="idea-mode-tab" id="tab-proactive-mode" data-mode="proactive" aria-selected="false">
+                    Channel Discovery
+                  </button>
+                </div>
+
+                <!-- Header Selection Status (Replaces middle barrier banner) -->
+                <div class="idea-header-selection" id="idea-header-selection" hidden>
+                  <span class="selection-tag">Selected</span>
+                  <span class="selection-name" id="header-selection-title"></span>
+                  <button type="button" class="selection-change-btn" id="header-selection-change">Change</button>
+                </div>
+
+                <div class="idea-studio-actions">
+                  <div class="idea-round-selector-wrap" id="idea-round-wrap" hidden>
+                    <span class="idea-round-label">Round:</span>
+                    <select id="idea-version-select" aria-label="Select idea pass"></select>
+                  </div>
+                  <button type="button" class="button quiet compact-button" id="toggle-raw-idea" title="Toggle raw markdown editor">
+                    View Markdown
+                  </button>
+                  <button class="button danger compact-button" id="idea-stop-run" type="button" hidden>Stop</button>
+                </div>
+              </div>
+
+              <!-- Compact Seed Bar (Active when ideas exist) -->
+              <div class="idea-seed-summary" id="idea-seed-summary" hidden>
+                <div class="seed-summary-content">
+                  <span class="seed-summary-badge">Seed Topic</span>
+                  <p class="seed-summary-text" id="seed-summary-text"></p>
+                </div>
+                <div class="seed-summary-actions">
+                  <button type="button" class="button quiet compact-button" id="btn-edit-seed">Edit Prompt</button>
+                </div>
+              </div>
+
+              <!-- Sculpted Studio Composer: Topic Mode -->
+              <div class="idea-composer-panel" id="deck-guided-mode">
+                <div class="composer-card">
+                  <div class="composer-header">
+                    <label for="deck-idea-topic" class="composer-label">Core Topic or Premise</label>
+                    <span class="composer-hint">Documentary hypothesis, historical mystery, or narrative question</span>
+                  </div>
+                  <textarea id="deck-idea-topic" rows="3" placeholder="e.g. What evidence changes how we understand a familiar historical event?"></textarea>
+                  <div class="composer-drawer" id="guided-sources-drawer" hidden>
+                    <label for="deck-idea-sources" class="drawer-label">Source leads, primary texts, or constraints (optional)</label>
+                    <textarea id="deck-idea-sources" rows="2" placeholder="URLs, inscriptions, primary texts, or specific editorial constraints..."></textarea>
+                  </div>
+                  <div class="composer-toolbar">
+                    <div class="toolbar-left">
+                      <button type="button" class="composer-chip-btn" id="toggle-sources-chip">
+                        + Source leads & notes
+                      </button>
+                    </div>
+                    <div class="toolbar-right">
+                      <button class="button primary compact-button" id="generate-guided-ideas" type="button">
+                        Generate Idea Angles
+                      </button>
+                      <button class="button approve compact-button" id="start-guided-autopilot" type="button">
+                        Start Auto Pipeline
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sculpted Studio Composer: Channel Proactive Discovery -->
+              <div class="idea-composer-panel" id="deck-proactive-mode" hidden>
+                <div class="composer-card proactive-card">
+                  <div class="proactive-header-row">
+                    <div class="proactive-channel-info">
+                      <strong id="proactive-channel-name">Example Channel</strong>
+                      <span id="proactive-channel-niche">Your channel’s subject area</span>
+                    </div>
+                    <p class="proactive-desc">
+                      Autonomous channel ideation. Scans channel catalog and unsolved tensions to propose 5-6 documentary concepts.
+                    </p>
+                  </div>
+                  <div class="composer-input-row">
+                    <label for="deck-proactive-steer" class="composer-label">Editorial Focus or Steering (Optional)</label>
+                    <input type="text" id="deck-proactive-steer" placeholder="Specify era, geography, or themes (or leave empty for broad discovery)">
+                  </div>
+                  <div class="composer-toolbar">
+                    <div class="toolbar-left"></div>
+                    <div class="toolbar-right">
+                      <button class="button primary compact-button" id="generate-proactive-ideas" type="button">
+                        Discover Channel Ideas
+                      </button>
+                      <button class="button approve compact-button" id="start-proactive-autopilot" type="button">
+                        Start Auto Pipeline
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ideas Cards Stream -->
+              <div class="idea-cards-scroll-area">
+                <div id="idea-lineage-banner-wrap"></div>
+                <div class="idea-cards-deck" id="idea-cards-deck">
+                  <!-- Generated Idea Cards rendered dynamically -->
+                </div>
+
+                <!-- Reiteration & Global Steering Bar (Below cards) -->
+                <div class="idea-reiterate-bar" id="idea-reiterate-bar" hidden>
+                  <div class="reiterate-inner">
+                    <div class="reiterate-input-wrap">
+                      <input type="text" id="idea-refine-input" placeholder="Steering instruction to refine these ideas (e.g. emphasize epigraphic evidence, shorter runtime, sharper conflict)...">
+                    </div>
+                    <div class="reiterate-buttons">
+                      <button class="button primary compact-button" id="refine-round-btn" type="button">Refine Current Set</button>
+                      <button class="button quiet compact-button" id="fresh-round-btn" type="button">Generate 6 Fresh Ideas</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Specialized Research Studio for Stage 2 -->
+            <div class="research-studio" id="research-studio" hidden>
+              <!-- Top Research Header Banner -->
+              <div class="research-header-banner" id="research-header-banner">
+                <div class="research-banner-left">
+                  <div class="research-badge-row">
+                    <span class="research-kicker">Stage 2 · Research Dossier</span>
+                    <span class="research-channel-pill" id="research-channel-pill">Example Channel</span>
+                    <span class="research-meta-pill" id="research-duration-pill">12 min</span>
+                    <span class="research-meta-pill" id="research-lang-pill">hi</span>
+                    <span class="research-idea-tag" id="research-idea-tag">Selected Idea</span>
+                  </div>
+                  <h2 class="research-topic-title" id="research-topic-title">Loading topic...</h2>
+                  <p class="research-topic-premise" id="research-topic-premise"></p>
+                </div>
+                <div class="research-banner-right">
+                  <div class="research-actions-row">
+                    <button type="button" class="button quiet compact-button" id="btn-deepen-research" title="Run a new adaptive research cycle with additional direction">
+                      + Deepen Research
+                    </button>
+                    <button type="button" class="button quiet compact-button" id="btn-write-dossier" title="Legacy manual dossier action" hidden>
+                      ✦ Write Dossiers
+                    </button>
+                    <button type="button" class="button quiet compact-button" id="btn-rerun-factcheck" title="Verification is included automatically" hidden>
+                      ✓ Run Evidence Audit
+                    </button>
+                    <button type="button" class="button quiet compact-button" id="toggle-raw-research" title="Toggle raw artifact workbench">
+                      View Raw Files
+                    </button>
+                    <button class="button danger compact-button" id="research-stop-run" type="button" hidden>Stop</button>
+                    <button class="button approve compact-button" id="research-proceed-script" type="button">
+                      Proceed to Script (Stage 3) →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Multi-Step Pipeline Stepper Bar -->
+              <div class="research-stepper-container" id="research-stepper-container">
+                <div class="research-stepper-steps">
+                  <div class="stepper-step" id="step-1-card" data-step="1">
+                    <span class="step-num-icon">1</span>
+                    <div class="step-info">
+                      <strong class="step-title">Adaptive Plan</strong>
+                    <span class="step-desc">LLM chooses 3–10 topic-specific angles</span>
+                    </div>
+                  </div>
+                  <div class="stepper-connector" id="connector-1-2"></div>
+                  <div class="stepper-step" id="step-2-card" data-step="2">
+                    <span class="step-num-icon">2</span>
+                    <div class="step-info">
+                      <strong class="step-title">Parallel Research</strong>
+                      <span class="step-desc">Independent agents browse and cite sources</span>
+                    </div>
+                  </div>
+                  <div class="stepper-connector" id="connector-2-3"></div>
+                  <div class="stepper-step" id="step-3-card" data-step="3">
+                    <span class="step-num-icon">3</span>
+                    <div class="step-info">
+                      <strong class="step-title">Adaptive Synthesis</strong>
+                      <span class="step-desc">One to three passes selected by the planner</span>
+                    </div>
+                  </div>
+                  <div class="stepper-connector" id="connector-3-4"></div>
+                  <div class="stepper-step" id="step-4-card" data-step="4">
+                    <span class="step-num-icon">4</span>
+                    <div class="step-info">
+                      <strong class="step-title">Critical Verification</strong>
+                      <span class="step-desc">Sources reopened and claims checked</span>
+                    </div>
+                  </div>
+                  <div class="stepper-connector" id="connector-4-5"></div>
+                  <div class="stepper-step" id="step-5-card" data-step="5">
+                    <span class="step-num-icon">5</span>
+                    <div class="step-info">
+                      <strong class="step-title">Script-Safe Release</strong>
+                      <span class="step-desc">Verified dossier and production brief</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="stepper-status-line">
+                  <span class="stepper-pulse-dot" id="stepper-pulse-dot" hidden></span>
+                  <span class="stepper-status-text" id="stepper-status-text">Ready to run research</span>
+                </div>
+              </div>
+
+              <!-- Deepening Modal Drawer -->
+              <div class="research-deepen-panel" id="research-deepen-panel" hidden>
+                <div class="deepen-inner">
+                  <label for="research-deepen-input" class="deepen-label">Steer Deepening Pass</label>
+                  <input type="text" id="research-deepen-input" placeholder="e.g. Dig into Chalukya copper plates, explore maritime trade links, verify dates of royal grants...">
+                  <div class="deepen-actions">
+                    <button type="button" class="button quiet compact-button" id="btn-cancel-deepen">Cancel</button>
+                    <button type="button" class="button primary compact-button" id="btn-submit-deepen">Execute Deepening Pass</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty State Hero Card (shown when no research files exist) -->
+              <div class="research-empty-hero" id="research-empty-hero">
+                <div class="empty-hero-card">
+                  <div class="empty-hero-header">
+                    <div class="hero-icon-wrap">
+                      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                      </svg>
+                    </div>
+                    <h2>Autonomous Evidence-Led Research Engine</h2>
+                    <p class="hero-tagline">
+                      Plans topic-specific angles, runs independent web-research agents, synthesizes their reports, and verifies critical claims before scripting.
+                    </p>
+                  </div>
+
+                  <div class="hero-steps-preview">
+                    <div class="preview-item">
+                      <span class="preview-num">01</span>
+                      <div><strong>Plan the Angles</strong><span>Selects 3–10 distinct investigations from the idea, pitch, and channel</span></div>
+                    </div>
+                    <div class="preview-item">
+                      <span class="preview-num">02</span>
+                      <div><strong>Research in Parallel</strong><span>Fresh agents browse authoritative sources and save cited reports</span></div>
+                    </div>
+                    <div class="preview-item">
+                      <span class="preview-num">03</span>
+                      <div><strong>Adaptive Synthesis</strong><span>Uses one, two, or three editorial passes according to topic complexity</span></div>
+                    </div>
+                    <div class="preview-item">
+                      <span class="preview-num">04</span>
+                      <div><strong>Fact Verification</strong><span>Audits all factual claims against primary evidence and calculates confidence scores</span></div>
+                    </div>
+                    <div class="preview-item">
+                      <span class="preview-num">05</span>
+                      <div><strong>Production Brief</strong><span>Releases only verified or explicitly qualified material to scripting</span></div>
+                    </div>
+                  </div>
+
+                  <!-- Central Big CTA Button -->
+                  <div class="hero-cta-section">
+                    <button type="button" class="button primary hero-start-btn" id="btn-start-deep-research">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                      Start Adaptive Research
+                    </button>
+                  </div>
+
+                  <div class="hero-notes-drawer" id="hero-notes-drawer">
+                    <button type="button" class="hero-drawer-toggle" id="toggle-hero-notes">
+                      + Add a research direction or constraint (optional)
+                    </button>
+                    <div class="hero-notes-body" id="hero-notes-body" hidden>
+                      <textarea id="research-seed-notes" rows="3" placeholder="For example: prioritize primary sources, challenge a common assumption, and make uncertainty explicit."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Active Research Workspace (shown when research files exist) -->
+              <div class="research-active-workspace" id="research-active-workspace" hidden>
+                <!-- Left Sub-Sidebar: Corpus Hierarchy Tree -->
+                <aside class="research-hierarchy-rail" aria-label="Research Corpus Explorer">
+                  <div class="rail-header">
+                    <span class="rail-heading">Corpus Explorer</span>
+                  </div>
+                  <div class="hierarchy-tree" id="research-hierarchy-tree">
+                    <!-- Group 1: Pure Script Corpus -->
+                    <div class="tree-group">
+                      <div class="tree-group-title">
+                        <span class="group-icon">🌟</span>
+                        <span>Pure Script Corpus</span>
+                        <span class="group-badge ready">Feed to Script</span>
+                      </div>
+                      <div class="tree-group-items" id="tree-pure-corpus"></div>
+                    </div>
+
+                    <!-- Group 2: Fact-Check & Verification -->
+                    <div class="tree-group">
+                      <div class="tree-group-title">
+                        <span class="group-icon">🛡️</span>
+                        <span>Verification & Claims</span>
+                        <span class="group-badge verify" id="factcheck-summary-badge">Audit</span>
+                      </div>
+                      <div class="tree-group-items" id="tree-factcheck"></div>
+                    </div>
+
+                    <!-- Group 3: Source Evidence & Leads -->
+                    <div class="tree-group">
+                      <div class="tree-group-title">
+                        <span class="group-icon">📚</span>
+                        <span>Sources & Evidence</span>
+                      </div>
+                      <div class="tree-group-items" id="tree-sources"></div>
+                    </div>
+
+                    <!-- Group 4: Discarded Material -->
+                    <div class="tree-group">
+                      <div class="tree-group-title">
+                        <span class="group-icon">🚫</span>
+                        <span>Discarded Material</span>
+                        <span class="group-badge discarded">Excluded</span>
+                      </div>
+                      <div class="tree-group-items" id="tree-discarded"></div>
+                    </div>
+                  </div>
+                </aside>
+
+                <!-- Right Main Content Area with View Tabs -->
+                <main class="research-main-panel">
+                  <!-- Research Sub-tabs -->
+                  <div class="research-tab-bar" role="tablist">
+                    <button type="button" role="tab" class="research-tab-btn active" id="tab-corpus-dossier" data-view="corpus" aria-selected="true">
+                      📄 Corpus Dossier
+                    </button>
+                    <button type="button" role="tab" class="research-tab-btn" id="tab-factcheck-matrix" data-view="factcheck" aria-selected="false">
+                      🛡️ Fact-Check Matrix <span class="tab-count-pill" id="factcheck-tab-count">0</span>
+                    </button>
+                    <button type="button" role="tab" class="research-tab-btn" id="tab-sources-ledger" data-view="sources" aria-selected="false">
+                      🌐 Sources & Evidence
+                    </button>
+                    <button type="button" role="tab" class="research-tab-btn" id="tab-discarded-ledger" data-view="discarded" aria-selected="false">
+                      🚫 Discarded Material
+                    </button>
+                  </div>
+
+                  <!-- Tab Panels -->
+                  <div class="research-tab-content">
+                    <!-- Panel 1: Corpus Dossier Document View -->
+                    <div class="research-panel-view" id="panel-corpus-view">
+                      <div class="panel-toolbar">
+                        <div class="file-name-meta">
+                          <strong id="corpus-active-filename">research_corpus_1.md</strong>
+                          <span class="file-tag-pure">Pure Information</span>
+                          <span class="file-size-tag" id="corpus-active-filesize"></span>
+                        </div>
+                        <div class="panel-toolbar-actions">
+                          <button type="button" class="button quiet compact-button" id="btn-edit-corpus">Edit Dossier</button>
+                          <button type="button" class="button primary compact-button" id="btn-save-corpus" hidden>Save Changes</button>
+                        </div>
+                      </div>
+                      <div class="corpus-reader-container" id="corpus-reader-container">
+                        <div class="markdown-rendered" id="corpus-rendered-content"></div>
+                        <textarea class="corpus-editor-textarea" id="corpus-editor-textarea" hidden></textarea>
+                      </div>
+                    </div>
+
+                    <!-- Panel 2: Interactive Fact-Check Dashboard -->
+                    <div class="research-panel-view" id="panel-factcheck-view" hidden>
+                      <div class="factcheck-summary-bar">
+                        <div class="fc-stat-card total">
+                          <span class="fc-stat-num" id="fc-stat-total">0</span>
+                          <span class="fc-stat-label">Total Claims</span>
+                        </div>
+                        <div class="fc-stat-card supported">
+                          <span class="fc-stat-num" id="fc-stat-supported">0</span>
+                          <span class="fc-stat-label">Supported (Verified)</span>
+                        </div>
+                        <div class="fc-stat-card partial">
+                          <span class="fc-stat-num" id="fc-stat-partial">0</span>
+                          <span class="fc-stat-label">Partial / Qualified</span>
+                        </div>
+                        <div class="fc-stat-card unverified">
+                          <span class="fc-stat-num" id="fc-stat-unverified">0</span>
+                          <span class="fc-stat-label">Unverified / Dubious</span>
+                        </div>
+                      </div>
+
+                      <div class="fc-filter-bar">
+                        <div class="fc-filters">
+                          <button type="button" class="filter-btn active" data-filter="ALL">All Claims</button>
+                          <button type="button" class="filter-btn" data-filter="SUPPORTED">Supported</button>
+                          <button type="button" class="filter-btn" data-filter="PARTIAL">Partial</button>
+                          <button type="button" class="filter-btn" data-filter="UNVERIFIED">Unverified</button>
+                          <button type="button" class="filter-btn" data-filter="DISCARDED">Discarded</button>
+                        </div>
+                        <div class="fc-actions">
+                          <button type="button" class="button quiet compact-button" id="btn-rerun-audit">Re-audit Claims</button>
+                        </div>
+                      </div>
+
+                      <div class="factcheck-claims-deck" id="factcheck-claims-deck">
+                        <!-- Rendered claim auditor cards -->
+                      </div>
+                    </div>
+
+                    <!-- Panel 3: Sources & Citations View -->
+                    <div class="research-panel-view" id="panel-sources-view" hidden>
+                      <div class="panel-toolbar">
+                        <strong>Source & Citation Ledger</strong>
+                        <span id="sources-count-meta"></span>
+                      </div>
+                      <div class="sources-list-container" id="sources-list-container"></div>
+                    </div>
+
+                    <!-- Panel 4: Discarded Material View -->
+                    <div class="research-panel-view" id="panel-discarded-view" hidden>
+                      <div class="panel-toolbar">
+                        <div class="file-name-meta">
+                          <strong>Excluded Claims & Material</strong>
+                          <span class="file-tag-excluded">Excluded from Script</span>
+                        </div>
+                      </div>
+                      <div class="discarded-list-container" id="discarded-list-container"></div>
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </div>
+
+            <section class="script-studio" id="script-studio" hidden aria-label="Script Studio">
+              <header class="script-studio-header">
+                <div>
+                  <p class="script-studio-kicker">Narration desk</p>
+                  <h2 id="script-studio-title">Script</h2>
+                  <p id="script-studio-status">Choose a draft or generate one from the approved research.</p>
+                </div>
+                <div class="script-studio-header-tools">
+                  <div class="script-flow" id="script-flow" aria-label="Script workflow status"></div>
+                  <div class="script-studio-actions" id="script-studio-actions"></div>
+                </div>
+              </header>
+              <div class="script-studio-grid">
+                <nav class="script-navigator" aria-label="Script versions">
+                  <div class="script-nav-heading"><strong>Versions</strong><button class="text-button" id="script-new-draft" type="button">New draft</button></div>
+                  <div id="script-version-list" class="script-version-list"></div>
+                  <div class="script-nav-heading translation-heading"><strong>Script languages</strong><button class="text-button" id="script-translate" type="button">Translate</button></div>
+                  <div id="script-language-list" class="script-language-list"></div>
+                </nav>
+                <main class="script-manuscript" id="script-manuscript" aria-live="polite"></main>
+                <aside class="script-review-drawer" id="script-review-drawer" aria-label="Review evidence" hidden>
+                  <div class="script-review-tabs" role="tablist">
+                    <button type="button" class="active" data-script-panel="comments" role="tab">Comments <span id="script-comment-count"></span></button>
+                    <button type="button" data-script-panel="evidence" role="tab">Evidence</button>
+                    <button type="button" data-script-panel="activity" role="tab">Activity</button>
+                  </div>
+                  <div class="script-review-content" id="script-review-content"></div>
+                </aside>
+              </div>
+            </section>
+
+            <section class="blueprint-studio" id="blueprint-studio" hidden aria-label="Editorial Blueprint">
+              <header class="blueprint-header">
+                <div>
+                  <h2 id="blueprint-title">Editorial Blueprint</h2>
+                  <p id="blueprint-status">Build the production plan from the approved script.</p>
+                </div>
+                <div class="blueprint-actions">
+                  <label class="sr-only" for="blueprint-version-select">Blueprint version</label>
+                  <select class="button quiet compact-button" id="blueprint-version-select" aria-label="Blueprint version"></select>
+                  <button type="button" class="button quiet compact-button" id="blueprint-compile-states">Compile screen states</button>
+                  <button type="button" class="button primary compact-button" id="blueprint-generate">Regenerate plan</button>
+                  <button type="button" class="button quiet compact-button" id="blueprint-reconcile">Reconcile voice timing</button>
+                </div>
+              </header>
+              <div class="blueprint-metrics" id="blueprint-metrics"></div>
+              <div class="blueprint-alerts" id="blueprint-alerts"></div>
+              <div class="blueprint-layout">
+                <aside class="blueprint-rail" id="blueprint-rail" aria-label="Storyboard beats"></aside>
+                <main class="blueprint-stage" id="blueprint-stage"></main>
+                <aside class="blueprint-inspector" id="blueprint-inspector"></aside>
+              </div>
+            </section>
+
+            <!-- Specialized Audio Studio for Stage 5 (Deterministic Voiceover, Music & Mastering) -->
+            <section class="audio-studio" id="audio-studio" hidden aria-label="Audio Studio">
+              <!-- Audio Studio Header Bar -->
+              <header class="audio-studio-header">
+                <div class="audio-header-left">
+                  <div class="audio-badge-row">
+                    <span class="audio-kicker">Stage 5 · Audio Studio</span>
+                  </div>
+                  <h2 class="audio-studio-title" id="audio-studio-title">Audio Production Workspace</h2>
+                  <div class="audio-meta-bar" id="audio-meta-bar">
+                    <span class="audio-meta-item">🎚️ Standard: <strong>-14.0 LUFS (Broadcast)</strong></span>
+                    <span class="audio-meta-item" id="audio-chunks-stat-pill">📊 Voice Chunks: <strong id="audio-stat-chunks-count">0 / 0</strong></span>
+                    <span class="audio-meta-item" id="audio-cues-stat-pill">🎵 Music Cues: <strong id="audio-stat-cues-count">0 Planned</strong></span>
+                  </div>
+                </div>
+                <div class="audio-header-actions">
+                  <button type="button" class="button quiet" id="btn-prepare-narration" title="Extract narration and create a reviewable chunk plan">
+                    ✦ Prepare chunks
+                  </button>
+                  <button type="button" class="button quiet" id="btn-review-narration" title="Audit the complete narration once and review only exceptions">
+                    ✓ Review all
+                  </button>
+                  <button type="button" class="button primary" id="btn-run-voiceover" title="Generate narration voiceover via local Higgs TTS">
+                    🎙️ Generate Voiceover
+                  </button>
+                  <button type="button" class="button quiet" id="btn-run-music" title="Generate soundtrack cues via ACE-Step / YuE">
+                    🎵 Generate Music
+                  </button>
+                  <button type="button" class="button quiet" id="btn-run-mix" title="Mix and normalize voice and music to -14 LUFS">
+                    🎛️ Create Final Mix
+                  </button>
+                  <button type="button" class="button quiet" id="btn-open-voice-config" title="Open Voice Samples and Reference Configuration">
+                    ⚙️ Voice & Config
+                  </button>
+                </div>
+              </header>
+
+              <!-- Audio Studio Layout: Left Library + Center Stage -->
+              <div class="audio-studio-layout">
+                <!-- Left Rail: Audio File Library -->
+                <aside class="audio-library-rail" aria-label="Audio File Library">
+                  <div class="library-header">
+                    <span class="library-heading">📁 Audio Library</span>
+                    <span class="library-file-count" id="audio-library-total-count">0 files</span>
+                  </div>
+                  <div class="library-search-wrap">
+                    <input type="text" id="audio-library-search" class="compact-input" placeholder="Search audio files..." autocomplete="off">
+                  </div>
+                  <div class="library-groups" id="audio-library-groups">
+                    <!-- Group 1: Mixes & Masters (Primary Output) -->
+                    <div class="library-group">
+                      <div class="library-group-title">
+                        <span class="group-icon">🎛️</span>
+                        <span>Mixes & Masters</span>
+                        <span class="group-count-badge" id="count-group-mixes">0</span>
+                      </div>
+                      <div class="library-items" id="lib-group-mixes"></div>
+                    </div>
+                    <!-- Group 2: Voice Takes & Chunks -->
+                    <div class="library-group">
+                      <div class="library-group-title">
+                        <span class="group-icon">🎙️</span>
+                        <span>Voiceover & Chunks</span>
+                        <span class="group-count-badge" id="count-group-voice">0</span>
+                      </div>
+                      <div class="library-items" id="lib-group-voice"></div>
+                    </div>
+                    <!-- Group 3: Music & SFX -->
+                    <div class="library-group">
+                      <div class="library-group-title">
+                        <span class="group-icon">🎵</span>
+                        <span>Music & Ambience</span>
+                        <span class="group-count-badge" id="count-group-music">0</span>
+                      </div>
+                      <div class="library-items" id="lib-group-music"></div>
+                    </div>
+                    <!-- Group 4: Plans & Cues -->
+                    <div class="library-group">
+                      <div class="library-group-title">
+                        <span class="group-icon">📋</span>
+                        <span>Plans & Config</span>
+                        <span class="group-count-badge" id="count-group-plans">0</span>
+                      </div>
+                      <div class="library-items" id="lib-group-plans"></div>
+                    </div>
+                  </div>
+                </aside>
+
+                <!-- Center Main Workspace Area -->
+                <main class="audio-main-stage">
+                  <!-- Master Mix Hero Highlight Card (Prominently visible when mix is ready) -->
+                  <section class="master-mix-hero-card" id="master-mix-hero-card" hidden>
+                    <div class="master-mix-hero-top">
+                      <div class="master-mix-hero-info">
+                        <div class="master-mix-badge-row">
+                          <span class="status-pill ok">🎉 Broadcast Master Ready</span>
+                          <span class="spec-pill" id="hero-master-version">final_mix_v1.wav</span>
+                          <span class="spec-pill" id="hero-master-timing">10:31 · Stereo 48 kHz</span>
+                          <span class="spec-pill highlight" id="hero-master-ducking">BGM Sidechain Ducked</span>
+                        </div>
+                        <h3 class="master-mix-hero-title">Complete Broadcast Master Mix</h3>
+                        <p class="master-mix-hero-subtitle" id="hero-master-subtitle">
+                          Full 10m 31s master: dialogue anchored at -14 LUFS, music bed seamlessly ducked, 48 kHz stereo 24-bit PCM.
+                        </p>
+                      </div>
+                      <div class="master-mix-hero-actions">
+                        <button type="button" class="button primary" id="btn-hero-master-view">
+                          🎛️ Open Master Mixer
+                        </button>
+                        <a href="#" download id="hero-master-download" class="button secondary">
+                          ⬇ Download WAV
+                        </a>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Main Stage Sub-Tabs -->
+                  <div class="audio-tab-bar" role="tablist">
+                    <button type="button" role="tab" class="audio-tab-btn active" id="tab-btn-chunks" data-tab="chunks" aria-selected="true">
+                      📊 Voiceover Chunk Monitor <span class="tab-count-badge" id="tab-chunks-progress-badge">0%</span>
+                    </button>
+                    <button type="button" role="tab" class="audio-tab-btn" id="tab-btn-music" data-tab="music" aria-selected="false">
+                      🎵 Music & Score Timeline <span class="tab-count-badge" id="tab-music-cues-badge">0 cues</span>
+                    </button>
+                    <button type="button" role="tab" class="audio-tab-btn" id="tab-btn-mix" data-tab="mix" aria-selected="false">
+                      🎛️ Master Mix <span class="tab-count-badge" id="tab-mix-badge">Ready</span>
+                    </button>
+                    <button type="button" role="tab" class="audio-tab-btn" id="tab-btn-player" data-tab="player" aria-selected="false">
+                      🎧 Audio Player & Reader
+                    </button>
+                  </div>
+
+                  <!-- Tab Panel 1: Voiceover Chunk Monitor -->
+                  <div class="audio-panel-view" id="panel-audio-chunks">
+                    <!-- Progress Bar Summary Card -->
+                    <div class="chunk-progress-card">
+                      <div class="progress-card-top">
+                        <div class="progress-title-block">
+                          <strong id="chunk-progress-headline">Voiceover Synthesis Progress</strong>
+                          <span id="chunk-progress-subtitle" class="progress-subtext">0 of 0 chunks completed</span>
+                        </div>
+                        <div class="progress-percentage-pill" id="chunk-percentage-pill">0%</div>
+                      </div>
+                      <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="chunk-progress-bar" style="width: 0%;"></div>
+                      </div>
+                      <div class="progress-metrics-row">
+                        <div class="metric-box">
+                          <span class="metric-label">Total Chunks</span>
+                          <strong class="metric-val" id="metric-total-chunks">0</strong>
+                        </div>
+                        <div class="metric-box">
+                          <span class="metric-label">Completed</span>
+                          <strong class="metric-val success-val" id="metric-completed-chunks">0</strong>
+                        </div>
+                        <div class="metric-box">
+                          <span class="metric-label">Remaining</span>
+                          <strong class="metric-val" id="metric-remaining-chunks">0</strong>
+                        </div>
+                        <div class="metric-box">
+                          <span class="metric-label">Spoken Audio</span>
+                          <strong class="metric-val" id="metric-spoken-time">0:00</strong>
+                        </div>
+                        <div class="metric-box">
+                          <span class="metric-label">Pipeline</span>
+                          <strong class="metric-val" id="metric-engine-status">Deterministic</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <section class="chunk-review-panel" id="chunk-review-panel" hidden aria-live="polite">
+                      <div class="chunk-review-panel-head">
+                        <div><span class="audio-kicker">Chunk review</span><strong id="chunk-review-title">Select a chunk to review</strong></div>
+                        <button type="button" class="button quiet compact-button" id="btn-close-chunk-review">Close</button>
+                      </div>
+                      <p id="chunk-review-text" class="chunk-review-text"></p>
+                      <label class="chunk-review-label" for="chunk-review-comment">Review note (saved with this chunk)</label>
+                      <textarea id="chunk-review-comment" class="compact-input" rows="3" placeholder="Example: pronunciation check required before publishing."></textarea>
+                      <div class="chunk-review-actions"><button type="button" class="button quiet compact-button" id="btn-approve-chunk">Record approval</button><button type="button" class="button primary compact-button" id="btn-retake-chunk">Regenerate chunk</button></div>
+                    </section>
+                    <section class="chunk-review-panel" id="batch-review-panel" hidden aria-live="polite">
+                      <div class="chunk-review-panel-head"><div><span class="audio-kicker">Batch narration review</span><strong id="batch-review-title">Narration audit</strong></div><button type="button" class="button quiet compact-button" id="btn-close-batch-review">Close</button></div>
+                      <p id="batch-review-summary" class="chunk-review-text"></p>
+                      <div id="batch-review-findings" class="batch-review-findings"></div>
+                      <div class="chunk-review-actions"><button type="button" class="button primary compact-button" id="btn-approve-batch-review">Approve narration plan</button></div>
+                    </section>
+
+                    <!-- Chunk Rows Container -->
+                    <div class="chunk-table-header">
+                      <span>Chunk</span>
+                      <span>Status</span>
+                      <span>Script Text Excerpt</span>
+                      <span>Duration</span>
+                      <span>Action</span>
+                    </div>
+                    <div class="chunk-list-container" id="chunk-list-container">
+                      <div class="chunk-empty-state">No voiceover takes generated yet. Click "Generate Voiceover" to start synthesis.</div>
+                    </div>
+                  </div>
+
+                  <!-- Tab Panel 2: Audio Player & Inspector -->
+                  <div class="audio-panel-view" id="panel-audio-player" hidden>
+                    <div class="player-toolbar">
+                      <div class="player-file-info">
+                        <strong id="player-active-filename">No file selected</strong>
+                        <span class="file-size-tag" id="player-active-filesize"></span>
+                        <span class="file-tag-pure" id="player-active-filetype">Media</span>
+                      </div>
+                    </div>
+                    <!-- Audio Player Card -->
+                    <div class="player-workspace" id="player-workspace">
+                      <div class="player-card" id="audio-player-card">
+                        <div class="player-visual-wave" id="player-visual-wave">
+                          <div class="wave-bar-container" id="wave-bars"></div>
+                        </div>
+                        <audio id="audio-studio-player" preload="metadata"></audio>
+                        <div class="player-controls-row">
+                          <button type="button" class="player-btn-play" id="btn-player-play-toggle" aria-label="Play or pause audio">
+                            ▶
+                          </button>
+                          <div class="player-time-display">
+                            <span id="player-current-time">0:00</span> / <span id="player-total-time">0:00</span>
+                          </div>
+                          <div class="player-scrub-wrap">
+                            <input type="range" id="player-scrubber" min="0" max="100" value="0" step="0.1" class="player-slider">
+                          </div>
+                          <div class="player-volume-wrap">
+                            <span>🔊</span>
+                            <input type="range" id="player-volume" min="0" max="1" value="1" step="0.05" class="player-slider compact">
+                          </div>
+                        </div>
+                        <!-- Technical Specs Box -->
+                        <div class="player-specs-grid" id="player-specs-grid">
+                          <div class="spec-cell"><span class="spec-name">Format</span><strong id="spec-format">WAV PCM</strong></div>
+                          <div class="spec-cell"><span class="spec-name">Target Loudness</span><strong>-14.0 LUFS</strong></div>
+                          <div class="spec-cell"><span class="spec-name">Channels</span><strong id="spec-channels">Mono (Voice) / Stereo (Mix)</strong></div>
+                          <div class="spec-cell"><span class="spec-name">Sample Rate</span><strong id="spec-sample-rate">48000 Hz / 24000 Hz</strong></div>
+                        </div>
+                      </div>
+                      <!-- Text / JSON Document Reader (for non-audio files or chunk transcript preview) -->
+                      <div class="audio-doc-reader" id="audio-doc-reader" hidden>
+                        <div class="markdown-rendered" id="audio-doc-content"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tab Panel 2: Music & Score Timeline -->
+                  <div class="audio-panel-view" id="panel-audio-music" hidden>
+                    <!-- Music Overview Banner -->
+                    <div class="music-timeline-overview">
+                      <div class="music-overview-header">
+                        <div class="music-title-block">
+                          <strong id="music-overview-headline">Soundtrack Cue Architecture</strong>
+                          <span class="music-overview-subcopy" id="music-overview-subtitle">8 Music Cues mapped across 12:00 duration</span>
+                        </div>
+                        <div class="music-overview-actions">
+                          <div class="music-provider-select-wrap">
+                            <label for="music-provider-select">Engine:</label>
+                            <select id="music-provider-select" class="compact-select" aria-label="Music Engine">
+                              <option value="ace_step">ACE-Step 1.5 (Local MLX)</option>
+                              <option value="yue">YuE2-3B (ComfyUI Stereo)</option>
+                            </select>
+                          </div>
+                          <button type="button" class="button quiet compact-button" id="btn-trigger-music-substage">
+                            🎵 Generate Soundtrack via ACE-Step
+                          </button>
+                        </div>
+                      </div>
+                      <!-- Visual Horizontal Timeline Ribbon -->
+                      <div class="music-visual-timeline-wrap">
+                        <div class="music-timeline-ruler">
+                          <span>00:00</span>
+                          <span>03:00</span>
+                          <span>06:00</span>
+                          <span>09:00</span>
+                          <span>12:00</span>
+                        </div>
+                        <div class="music-timeline-ribbon" id="music-timeline-ribbon"></div>
+                      </div>
+                      <div class="music-overview-specs">
+                        <div class="music-spec-item">
+                          <span class="spec-label">Music Cues</span>
+                          <strong id="music-stat-total-cues">8 Cues Planned</strong>
+                        </div>
+                        <div class="music-spec-item">
+                          <span class="spec-label">Coverage Span</span>
+                          <strong id="music-stat-coverage">00:00 – 12:00 (100%)</strong>
+                        </div>
+                        <div class="music-spec-item">
+                          <span class="spec-label">Narration Ducking</span>
+                          <strong>-16 dB under voice</strong>
+                        </div>
+                        <div class="music-spec-item">
+                          <span class="spec-label">Dialogue Protection</span>
+                          <strong>Active (No transients under technical terms)</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Music Cue Cards Container -->
+                    <div class="music-cues-list" id="music-cues-container"></div>
+
+                    <!-- Targeted Revision Request -->
+                    <div class="targeted-revision-card">
+                      <div class="revision-card-header">
+                        <strong>Targeted Music / Voice Revision</strong>
+                        <span class="revision-subtext">Regenerate specific time spans without discarding completed audio</span>
+                      </div>
+                      <div class="revision-fields-grid">
+                        <div class="rev-field">
+                          <label for="rev-start-time">Start Time (sec)</label>
+                          <input type="number" id="rev-start-time" min="0" step="0.1" value="0" class="compact-input">
+                        </div>
+                        <div class="rev-field">
+                          <label for="rev-end-time">End Time (sec)</label>
+                          <input type="number" id="rev-end-time" min="0" step="0.1" value="30" class="compact-input">
+                        </div>
+                        <div class="rev-field">
+                          <label for="rev-scope">Target Layer</label>
+                          <select id="rev-scope" class="compact-select">
+                            <option value="music">Music Only</option>
+                            <option value="both">Voice and Music</option>
+                            <option value="voice">Voiceover Only</option>
+                          </select>
+                        </div>
+                        <div class="rev-field full-width">
+                          <label for="rev-comment">Revision Direction</label>
+                          <input type="text" id="rev-comment" placeholder="e.g. Make BGM quieter here, or soften percussion under explanation" class="compact-input">
+                        </div>
+                      </div>
+                      <div class="revision-actions">
+                        <button type="button" class="button primary compact-button" id="btn-submit-revision">
+                          Request Targeted Revision
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tab Panel 3: Master Mix Station -->
+                  <div class="audio-panel-view" id="panel-audio-mix" hidden>
+                    <!-- Mix Station Status Banner -->
+                    <div class="mix-station-header-card" id="mix-station-header-card">
+                      <div class="mix-station-top">
+                        <div class="mix-station-title-block">
+                          <div class="mix-station-pill-row">
+                            <span class="status-pill ok" id="mix-status-pill">Broadcast Compliant Master</span>
+                            <span class="spec-pill" id="mix-version-pill">final_mix_v1.wav</span>
+                            <span class="spec-pill" id="mix-filesize-pill">173.3 MB</span>
+                          </div>
+                          <strong id="mix-headline" class="mix-station-headline">Complete Soundtrack & Narration Master</strong>
+                          <span id="mix-subtitle" class="mix-station-subtext">Voiceover and soundtrack cues sequenced, sidechain-ducked, and loudness normalized to YouTube broadcast standard.</span>
+                        </div>
+                        <div class="mix-station-actions">
+                          <button type="button" class="button primary" id="btn-mix-rerun">
+                            🔄 Re-run Final Mix
+                          </button>
+                          <a href="#" download id="btn-mix-download" class="button secondary">
+                            ⬇ Download WAV
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Dedicated Master Waveform Player -->
+                    <div class="player-workspace" id="mix-player-workspace">
+                      <div class="player-card" id="mix-player-card">
+                        <div class="player-visual-wave" id="mix-visual-wave">
+                          <div class="wave-bar-container" id="mix-wave-bars"></div>
+                        </div>
+                        <audio id="mix-studio-player" preload="metadata"></audio>
+                        <div class="player-controls-row">
+                          <button type="button" class="player-btn-play" id="btn-mix-play-toggle" aria-label="Play or pause master mix">
+                            ▶
+                          </button>
+                          <div class="player-time-display">
+                            <span id="mix-current-time">0:00</span> / <span id="mix-total-time">0:00</span>
+                          </div>
+                          <div class="player-scrub-wrap">
+                            <input type="range" id="mix-scrubber" min="0" max="100" value="0" step="0.1" class="player-slider">
+                          </div>
+                          <div class="player-volume-wrap">
+                            <span>🔊</span>
+                            <input type="range" id="mix-volume" min="0" max="1" value="1" step="0.05" class="player-slider compact">
+                          </div>
+                        </div>
+
+                        <!-- Technical Specs Box -->
+                        <div class="player-specs-grid" id="mix-specs-grid">
+                          <div class="spec-cell"><span class="spec-name">Master Format</span><strong id="mix-spec-format">WAV 24-bit PCM</strong></div>
+                          <div class="spec-cell"><span class="spec-name">Integrated Loudness</span><strong id="mix-spec-loudness" class="success-val">-14.0 LUFS (Compliant)</strong></div>
+                          <div class="spec-cell"><span class="spec-name">True Peak Ceiling</span><strong id="mix-spec-tp">-1.5 dBTP (Protected)</strong></div>
+                          <div class="spec-cell"><span class="spec-name">Channels & Rate</span><strong id="mix-spec-channels">Stereo 48000 Hz</strong></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Stems & Processing Architecture -->
+                    <div class="mix-stems-card" id="mix-stems-card">
+                      <div class="mix-stems-header">
+                        <strong>Audio Stems & Signal Flow Routing</strong>
+                        <span class="mix-stems-meta" id="mix-stems-summary">Voiceover Take + Sidechain-Ducked Music Bed</span>
+                      </div>
+                      <div class="mix-stems-list" id="mix-stems-list"></div>
+                    </div>
+
+                    <!-- Quality Control Verification Grid -->
+                    <div class="mix-qc-card" id="mix-qc-card">
+                      <div class="mix-qc-header">
+                        <strong>Automated Quality Control Verification (qc_audio)</strong>
+                        <span class="status-pill ok" id="mix-qc-overall-badge">All Checks Passed</span>
+                      </div>
+                      <div class="mix-qc-checks-grid" id="mix-qc-checks-grid"></div>
+                    </div>
+
+                    <!-- Empty state if no mix has been generated yet -->
+                    <div class="mix-empty-card" id="mix-empty-card" hidden>
+                      <div class="mix-empty-icon">🎛️</div>
+                      <h3>No Master Mix Created Yet</h3>
+                      <p>Generate voiceover and music cues, then click "Create Final Mix" to run sidechain ducking and broadcast mastering.</p>
+                      <button type="button" class="button primary" id="btn-mix-empty-run">🎛️ Create Final Mix Now</button>
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </section>
+
+            <!-- Specialized Visuals Studio for Stage 6 (FLUX.1 Engine) -->
+            <section class="visuals-studio" id="visuals-studio" hidden>
+              <div class="visuals-header-banner">
+                <div class="visuals-banner-left">
+                  <div class="visuals-badge-row">
+                    <span class="visuals-kicker">Stage 6 · Visuals Studio</span>
+                    <span class="visuals-engine-pill">FLUX.1 / MLX 4-bit</span>
+                    <span class="visuals-upscale-pill" title="Super-resolution is applied only to selected/approved images">4x-UltraSharp (Selected Only)</span>
+                  </div>
+                  <h2 class="visuals-title" id="visuals-title">Visual Assets & Storyboard</h2>
+                  <div class="visuals-stats-row">
+                    <span class="stat-pill"><strong id="visuals-total-count">0</strong> total cues</span>
+                    <span class="stat-pill success"><strong id="visuals-rendered-count">0</strong> rendered</span>
+                    <span class="stat-pill highlight"><strong id="visuals-approved-count">0</strong> approved</span>
+                    <span class="stat-pill hd"><strong id="visuals-upscaled-count">0</strong> 1080p HD</span>
+                  </div>
+                </div>
+                <div class="visuals-banner-right">
+                  <div class="visuals-actions-row">
+                    <button type="button" class="button primary compact-button" id="btn-visuals-render-all" title="Batch render all pending visual assets using FLUX.1">
+                      ⚡ Render All Pending
+                    </button>
+                    <button type="button" class="button accent compact-button" id="btn-visuals-upscale-approved" title="Run 4x-UltraSharp neural upscaling to 1080p only on approved images">
+                      ✨ Upscale Approved (1080p)
+                    </button>
+                    <button type="button" class="button quiet compact-button" id="btn-toggle-thumbnail-drawer">
+                      🖼️ Thumbnails
+                    </button>
+                    <button type="button" class="button quiet compact-button" id="toggle-raw-visuals">
+                      View Raw Plan
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Thumbnail Drawer -->
+              <div class="visuals-thumbnail-drawer" id="visuals-thumbnail-drawer" hidden>
+                <div class="thumbnail-drawer-header">
+                  <strong>YouTube Thumbnail Brief & Concepts</strong>
+                  <button type="button" class="icon-button compact-button" id="btn-close-thumbnail-drawer">×</button>
+                </div>
+                <div class="thumbnail-drawer-body">
+                  <div class="thumbnail-brief-text" id="thumbnail-brief-content">No thumbnail brief found.</div>
+                  <div class="thumbnail-gallery" id="thumbnail-gallery"></div>
+                </div>
+              </div>
+
+              <!-- Filter / Search Toolbar -->
+              <div class="visuals-toolbar">
+                <div class="visuals-filter-group" role="tablist">
+                  <button type="button" class="filter-tab active" data-visual-filter="all">All (<span id="count-filter-all">0</span>)</button>
+                  <button type="button" class="filter-tab" data-visual-filter="pending">Pending (<span id="count-filter-pending">0</span>)</button>
+                  <button type="button" class="filter-tab" data-visual-filter="rendered">Rendered (<span id="count-filter-rendered">0</span>)</button>
+                  <button type="button" class="filter-tab" data-visual-filter="approved">Approved (<span id="count-filter-approved">0</span>)</button>
+                  <button type="button" class="filter-tab" data-visual-filter="upscaled">1080p (<span id="count-filter-upscaled">0</span>)</button>
+                </div>
+                <div class="visuals-type-filter">
+                  <select id="visuals-type-select" class="compact-select">
+                    <option value="">All Types (GEN, ART, MAP, PHOTO)</option>
+                    <option value="GEN">[GEN] AI Generative</option>
+                    <option value="ART">[ART] Historical Artwork</option>
+                    <option value="MAP">[MAP] Cartographic</option>
+                    <option value="PHOTO">[PHOTO] Archival Photo</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Assets Cards Grid -->
+              <div class="visuals-asset-grid" id="visuals-asset-grid">
+                <div class="empty-state">Loading visual assets...</div>
+              </div>
+            </section>
+
+            <div class="artifact-workbench" id="artifact-workbench">
+              <!-- Stage 3 Script Action Bar (Visible when in Script Stage and a script is active) -->
+              <div class="script-action-bar" id="script-action-bar" hidden>
+                <div class="script-bar-info">
+                  <span class="script-version-pill" id="script-version-pill">script_v1_hindi.md</span>
+                  <div class="script-config-pills">
+                    <span class="script-meta-badge" id="script-lang-badge">Hindi</span>
+                    <span class="script-meta-badge" id="script-time-badge">12 min</span>
+                  </div>
+                </div>
+                <div class="script-bar-actions">
+                  <button type="button" class="button quiet compact-button script-action-btn" id="btn-script-factcheck" title="Fact check this script against research corpus">
+                    🛡️ Fact Check
+                  </button>
+                  <button type="button" class="button quiet compact-button script-action-btn" id="btn-script-regenerate" title="Regenerate this script with adjustments">
+                    🔄 Regenerate
+                  </button>
+                  <button type="button" class="button primary compact-button script-action-btn" id="btn-script-analyze" title="Critically analyze script for YouTube retention, pacing, and hook">
+                    📊 Critically Analyze for YouTube
+                  </button>
+                </div>
+              </div>
+
+              <!-- Script Regeneration Drawer -->
+              <div class="script-regenerate-drawer" id="script-regenerate-drawer" hidden>
+                <div class="regenerate-inner">
+                  <div class="regenerate-header">
+                    <strong>🔄 Regenerate Script Version</strong>
+                    <button type="button" class="icon-button compact-button" id="btn-close-regenerate" title="Close">×</button>
+                  </div>
+                  <div class="regenerate-fields">
+                    <div class="script-field-group">
+                      <label for="script-regen-lang">Language</label>
+                      <select id="script-regen-lang" class="script-input-select">
+                        <option value="hi">Hindi (हिन्दी)</option>
+                        <option value="en">English</option>
+                      </select>
+                    </div>
+                    <div class="script-field-group">
+                      <label for="script-regen-duration">Target Duration (min)</label>
+                      <input type="number" id="script-regen-duration" min="1" max="120" step="1" value="12" class="script-input-number">
+                    </div>
+                    <div class="script-field-group full-width">
+                      <label for="script-regen-notes">Iteration Direction / Improvements</label>
+                      <input type="text" id="script-regen-notes" placeholder="e.g. Sharper cold open, stronger hook, tighter pacing..." class="script-input-text">
+                    </div>
+                  </div>
+                  <div class="regenerate-actions">
+                    <button type="button" class="button quiet compact-button" id="btn-cancel-regenerate">Cancel</button>
+                    <button type="button" class="button primary compact-button" id="btn-confirm-regenerate">Generate Next Version →</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="artifact-header-bar">
+                <button type="button" class="button quiet compact-button" id="back-to-idea-studio" hidden>← Back to Idea Cards</button>
+                <button type="button" class="button quiet compact-button" id="back-to-research-studio" hidden>← Back to Research Studio</button>
+                <button type="button" class="button quiet compact-button" id="back-to-visuals-studio" hidden>← Back to Visuals Studio</button>
+                <div class="artifact-list" id="artifact-list" role="listbox" aria-label="Stage artifacts"></div>
+                <div class="canvas-actions">
+                  <button class="text-button" id="refresh-project" type="button">Refresh</button>
+                  <button class="button quiet compact-button" id="adopt-files" type="button" hidden>Use files</button>
+                  <button class="button primary" id="run-stage" type="button">Run</button>
+                  <button class="button danger compact-button" id="stop-run" type="button" hidden>Stop</button>
+                </div>
+              </div>
+              <!-- Script Generation Card (Shown when no script artifacts exist) -->
+              <div class="script-generate-card" id="script-generate-card" hidden>
+                <div class="script-gen-header">
+                  <div class="script-gen-icon">📝</div>
+                  <h3>Generate Video Script</h3>
+                  <p>Create a detailed video narration script from the research synthesis and evidence corpus.</p>
+                </div>
+                <div class="script-gen-fields">
+                  <div class="script-field-group">
+                    <label for="script-gen-lang">Authoring Language</label>
+                    <select id="script-gen-lang" class="script-input-select">
+                      <option value="en" selected>English (canonical draft)</option>
+                      <option value="hi">Hindi (direct draft)</option>
+                    </select>
+                  </div>
+                  <div class="script-field-group">
+                    <label for="script-gen-duration">Target Duration (Minutes)</label>
+                    <input type="number" id="script-gen-duration" min="1" max="120" step="1" value="12" class="script-input-number">
+                  </div>
+                  <div class="script-field-group full-width">
+                    <label for="script-gen-notes">Direction or Focus (Optional)</label>
+                    <input type="text" id="script-gen-notes" placeholder="e.g. Focus on oral transmission traditions vs library destruction" class="script-input-text">
+                  </div>
+                </div>
+                <div class="script-gen-actions">
+                  <button type="button" class="button primary" id="btn-start-generate-script">
+                    🚀 Generate Script
+                  </button>
+                </div>
+              </div>
+
+              <div class="artifact-view" id="artifact-view">
+                <div class="artifact-empty"><strong>No material selected</strong><span>Choose an artifact to review or edit.</span></div>
+              </div>
+            </div>
+          </section>
+          <aside class="side-drawer inspector" id="review-drawer" aria-label="Review and workspace controls">
+            <div class="drawer-resizer" id="review-resizer" title="Drag to resize panel"></div>
+            <header class="drawer-header">
+              <div class="drawer-title-group">
+                <button class="icon-button drawer-collapse-btn" id="review-edge-toggle" type="button" aria-label="Collapse review panel" title="Collapse review panel">
+                  <svg class="toggle-icon-chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <h2 id="review-drawer-title">Review</h2>
+              </div>
+              <button class="icon-button drawer-close" type="button" aria-label="Close review panel">×</button>
+            </header>
+            <!-- Audio Stage Tab Switcher inside review drawer -->
+            <div class="review-subtab-nav" id="audio-review-tab-nav" hidden>
+              <button type="button" class="review-subtab-btn active" id="btn-tab-review-gate">Stage Gate & Review</button>
+              <button type="button" class="review-subtab-btn" id="btn-tab-voice-config">Voice & Config ⚙️</button>
+            </div>
+            <!-- Audio Voice Samples & Pipeline Config Section -->
+            <div id="audio-voice-config-section" class="inspector-section voice-config-section" hidden>
+              <div class="voice-config-header">
+                <h3>Voice Reference Samples</h3>
+                <p class="voice-config-subcopy">Record, upload, or enhance reference samples for Hindi and English speech cloning.</p>
+              </div>
+              <div id="voice-config-cards-container" class="voice-config-cards"></div>
+              <div class="pipeline-settings-card">
+                <div class="section-line">
+                  <h4>Higgs TTS Settings</h4>
+                  <span class="status-pill ok">Local Engine</span>
+                </div>
+                <div class="pipeline-settings-grid">
+                  <label>Max Chars <input type="number" id="cfg-max-chars" min="100" max="600" step="10" value="320" class="compact-input"></label>
+                  <label>Temperature <input type="number" id="cfg-temperature" min="0.1" max="1.0" step="0.05" value="0.65" class="compact-input"></label>
+                  <label>Top P <input type="number" id="cfg-top-p" min="0.1" max="1.0" step="0.05" value="0.9" class="compact-input"></label>
+                  <label>Pause ms <input type="number" id="cfg-pause-ms" min="0" max="1000" step="50" value="100" class="compact-input"></label>
+                </div>
+                <button type="button" class="button quiet compact-button" id="btn-save-voice-pipeline-cfg" style="margin-top: 10px; width: 100%;">Save Pipeline Settings</button>
+              </div>
+              <div class="pipeline-settings-card" style="margin-top: 14px;">
+                <div class="section-line">
+                  <h4>Music Engine Settings</h4>
+                  <span class="status-pill ok" id="music-engine-status-pill">ACE-Step / YuE</span>
+                </div>
+                <div class="pipeline-settings-grid">
+                  <label>Provider
+                    <select id="cfg-music-provider" class="compact-select">
+                      <option value="ace_step">ACE-Step 1.5 (Local MLX)</option>
+                      <option value="yue">YuE2-3B (ComfyUI Stereo)</option>
+                    </select>
+                  </label>
+                  <label>Backend API URL <input type="text" id="cfg-music-api-url" value="http://127.0.0.1:8001" class="compact-input"></label>
+                  <label>Timeout (s) <input type="number" id="cfg-music-timeout" min="60" max="7200" step="60" value="2400" class="compact-input"></label>
+                </div>
+                <button type="button" class="button quiet compact-button" id="btn-save-music-pipeline-cfg" style="margin-top: 10px; width: 100%;">Save Music Settings</button>
+              </div>
+            </div>
+            <div id="review-gate-section-wrap">
+              <section class="inspector-section"><h3>Stage gate</h3><div id="dependency-list" class="dependency-list"></div><label for="review-note">Review note</label><textarea id="review-note" rows="4" placeholder="Record corrections, decisions, or remaining risks"></textarea><div class="gate-actions"><button class="button quiet" id="request-changes" type="button">Request changes</button><button class="button approve" id="approve-stage" type="button">Approve stage</button></div></section>
+              <section class="inspector-section" id="qc-panel" hidden><h3>Release checks</h3><div id="qc-checks" class="check-list"></div><button class="button quiet full" id="save-qc" type="button">Save manual checks</button></section>
+              <section class="inspector-section" id="publish-panel" hidden><h3>Release Console</h3><div class="youtube-status" id="youtube-status"></div><button class="button quiet full" id="youtube-auth" type="button" hidden>Authorize YouTube</button><label>Approved thumbnail<select id="publish-thumbnail"><option value="">Select an approved thumbnail</option></select></label><button class="button quiet full" id="prepare-release-contract" type="button">Prepare immutable release contract</button><label>Type the exact title to confirm private candidate upload<input id="publish-confirm" autocomplete="off"></label><button class="button publish full" id="publish-video" type="button">Upload qualified private candidate</button><hr><label>Owner release visibility<select id="owner-release-privacy"><option value="public">Public</option><option value="unlisted">Unlisted</option></select></label><label>Type the exact title to release<input id="owner-release-confirm" autocomplete="off"></label><label>Override rationale (required below target or for blockers)<textarea id="owner-release-rationale" rows="3"></textarea></label><button class="button approve full" id="owner-release-video" type="button">Owner release to YouTube</button><button class="button quiet full" id="reconcile-youtube-release" type="button">Reconcile manual YouTube Studio release</button><button class="button quiet full" id="refresh-analytics" type="button">Refresh analytics</button><div class="analytics-summary" id="analytics-summary"></div></section>
+              <section class="inspector-section"><div class="section-line"><h3>Run history</h3><span id="run-count"></span></div><div class="run-history" id="run-history"></div></section>
+              <details class="prompt-drawer"><summary>Run instructions</summary><label for="prompt-override">Override the stage prompt</label><textarea id="prompt-override" rows="7" placeholder="Leave empty to use the maintained prompt template."></textarea><div id="idea-planning-fields"><label>Planning route<select id="planning-mode"><option value="proactive">Proactive discovery</option><option value="guided">Use my topic or idea</option></select></label><label>Topic or seed idea<textarea id="idea-topic" rows="3" placeholder="Add a topic or rough idea when you have one."></textarea></label></div><label for="manual-sources" id="manual-sources-label">Researcher notes or source leads</label><textarea id="manual-sources" rows="4" placeholder="URLs, archive references, constraints, or editorial context"></textarea><label class="chain-control"><input id="chain-steps" type="checkbox"> Complete this stage automatically</label><div class="stage-worker-override"><label class="chain-control"><input id="stage-agent-override" type="checkbox"> Override workspace worker for this stage</label><label id="stage-agent-select-label" hidden>Stage worker<select id="stage-agent-select" aria-label="Stage worker"></select></label></div><label for="iteration-note" id="iteration-label">Direction for the next additive pass</label><textarea id="iteration-note" rows="3" placeholder="What should this pass add, vary, or correct?"></textarea><button class="button quiet" id="save-stage-settings" type="button">Save instructions</button></details>
+            </div>
+          </aside>
+        </div>
+        <button class="drawer-dock-toggle" id="review-dock-toggle" type="button" aria-label="Open review panel" title="Open review panel" hidden>
+          <svg class="toggle-icon-chevron" viewBox="0 0 24 24" width="14" height="14"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+          <aside class="side-drawer settings-drawer" id="settings-drawer" hidden aria-label="Workspace settings"><header class="drawer-header"><h2>Workspace settings</h2><button class="icon-button drawer-close" type="button" aria-label="Close workspace settings">×</button></header><div class="drawer-body"><p class="project-context" id="project-context"></p><label>Video title<input id="workspace-title" required maxlength="200" placeholder="Add a title when you settle on one"></label><label>Channel<select id="workspace-channel" aria-label="Channel for this video"></select></label><label class="compact-field">Target length<input id="target-duration" type="number" min="1" max="240" step="1"><span>min</span></label><label>Language<input id="workspace-language" maxlength="20" placeholder="hi"></label><div class="research-program-settings"><h3>Research program</h3><p>The planner chooses the actual breadth and synthesis depth within these ceilings.</p><label>Maximum synthesis passes<input id="research-rounds" type="number" min="1" max="3" step="1"></label><label>Maximum research angles<input id="research-max-sources" type="number" min="3" max="10" step="1"></label><label class="chain-control"><input id="workspace-autopilot" type="checkbox"> Run production stages automatically</label></div><button class="button primary full" id="save-project-settings" type="button">Save settings</button><button class="button quiet full" id="start-autopilot" type="button">Start autopilot from this stage</button>
+        <div class="settings-danger-zone">
+          <div class="danger-kicker">Danger zone</div>
+          <p>Permanently delete this workspace, all files on disk, and database records.</p>
+          <button class="button danger full" id="delete-workspace-btn" type="button">Delete workspace…</button>
+        </div>
+      </div>
+    </aside>
+      </section>
+    </main>
+    <section class="run-console collapsed" id="run-console" aria-label="Terminal run output">
+      <div class="console-resizer" id="console-resizer" title="Drag to resize console"></div>
+      <header class="console-header">
+        <div class="console-header-left">
+          <span class="live-mark" title="Run activity status"></span>
+          <strong id="console-title">Terminal</strong>
+          <small id="console-meta">No active run</small>
+          <span class="console-status-badge" id="console-status-badge" hidden>Ready</span>
+          <div class="console-run-select-wrap">
+            <select id="console-run-select" class="console-run-select" aria-label="Command run history">
+              <option value="">(No runs yet)</option>
+            </select>
+          </div>
+        </div>
+        <div class="console-header-right">
+          <button class="text-button" id="copy-console-cmd" type="button" title="Copy full command line to clipboard" hidden>Copy Command</button>
+          <button class="text-button" id="clear-console" type="button">Clear</button>
+          <button class="icon-button" id="console-toggle" type="button" aria-label="Toggle run output" aria-expanded="false">⌃</button>
+        </div>
+      </header>
+      <div class="console-cmd-bar" id="console-cmd-bar" hidden>
+        <span class="console-prompt-symbol">$</span>
+        <span class="console-cmd-text" id="console-cmd-text" title="Executed command"></span>
+        <span class="console-cwd-text" id="console-cwd-text"></span>
+      </div>
+      <div class="console-error-bar" id="console-error-bar" hidden>
+        <span class="console-error-icon">⚠</span>
+        <span class="console-error-text" id="console-error-text"></span>
+      </div>
+      <pre id="console-output" tabindex="0" aria-live="polite">Studio ready.</pre>
+    </section>
+  </div>
+  <dialog id="new-project-dialog"><form method="dialog" id="new-project-form"><header><div><p class="kicker">New video</p><h2>Open a workspace</h2></div><button class="icon-button" value="cancel" formnovalidate aria-label="Close">×</button></header><label>Channel<select id="new-channel" required></select></label><p class="new-workspace-copy">A date-and-time folder opens now. Add a title or topic later, from inside the workspace. New videos start at 12 minutes in Hindi.</p><footer><button class="button quiet" value="cancel" formnovalidate>Cancel</button><button class="button primary" id="create-project" value="default">Create workspace</button></footer></form></dialog>
+  <dialog id="delete-project-dialog">
+    <form method="dialog" id="delete-project-form">
+      <header>
+        <div>
+          <p class="kicker danger">Permanent action</p>
+          <h2>Delete workspace?</h2>
+        </div>
+        <button class="icon-button" value="cancel" formnovalidate aria-label="Close">×</button>
+      </header>
+      <div class="dialog-body">
+        <p class="delete-warning-copy">You are about to permanently delete <strong id="delete-target-title"></strong> (<span id="delete-target-slug"></span>).</p>
+        <p class="delete-warning-subcopy">This permanently removes the entire workspace directory on disk, including all research, scripts, audio takes, renders, exports, and clears all database records, revisions, and run history. <strong>This cannot be undone.</strong></p>
+        <label class="delete-confirm-label" for="delete-confirm-input">
+          <span>To confirm, type <strong class="danger-text">delete</strong> below:</span>
+          <input id="delete-confirm-input" type="text" autocomplete="off" placeholder="type delete" spellcheck="false">
+        </label>
+      </div>
+      <footer>
+        <button class="button quiet" id="cancel-delete-btn" value="cancel" formnovalidate type="button">Cancel</button>
+        <button class="button danger" id="confirm-delete-btn" type="submit" hidden>Delete workspace</button>
+      </footer>
+    </form>
+  </dialog>
+  <dialog id="visuals-lightbox-dialog" class="visuals-lightbox">
+    <div class="lightbox-inner">
+      <header class="lightbox-header">
+        <div class="lightbox-meta">
+          <strong id="lightbox-asset-id">ASSET_001</strong>
+          <span id="lightbox-asset-type" class="cue-pill">GEN</span>
+          <span id="lightbox-asset-resolution" class="res-pill">1920x1080</span>
+        </div>
+        <button type="button" class="icon-button" id="btn-close-lightbox" aria-label="Close">×</button>
+      </header>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="Full resolution render">
+      </div>
+      <footer class="lightbox-footer">
+        <p id="lightbox-prompt" class="lightbox-prompt-text"></p>
+      </footer>
+    </div>
+  </dialog>
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+  <script src="/app.js?v=10"></script>
+</body>
+</html>
